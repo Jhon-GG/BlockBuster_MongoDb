@@ -4,7 +4,8 @@ import { connect } from "./helpers/db/connect.js";
 import { 
     getCountDvd,
     getMoviesWithMainActors,
-    getTotalMoviesAwards
+    getTotalMoviesAwards,
+    getAllJohnDoeMovies
 } from "./js/model/movies.js";
 
 
@@ -25,4 +26,5 @@ import {
 // console.log (await getAverageOfActorsAge());
 // console.log (await getActorsWithInstagram());
 // console.log (await getMoviesWithMainActors());
-console.log (await getTotalMoviesAwards());
+// console.log (await getTotalMoviesAwards());
+console.log (await getAllJohnDoeMovies());
