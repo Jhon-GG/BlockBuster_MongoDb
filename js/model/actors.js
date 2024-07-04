@@ -227,3 +227,8 @@ export const getActorsWithInstagram = async () => {
         return { actors_with_instagram: [] };
     }
 }
+
+
+// 18. Encontrar todos los actores que han ganado premios después de 2015:
+
+

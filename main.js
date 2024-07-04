@@ -33,7 +33,7 @@ import {
 // console.log (await getActorsWithOscarAward());
 // console.log (await getActorsAward());
 // console.log (await getBornLater1980());
-console.log (await getMostAwardActors());
+// console.log (await getMostAwardActors());
 
 
 
@@ -45,4 +45,16 @@ console.log (await getMostAwardActors());
 // console.log (await getTotalMoviesAwards());
 // console.log (await getAllJohnDoeMovies());
 // console.log (await getAllFictionMoviesWithActorId3());
-// console.log (await getMovieWithMayorDVD());
+
+let {movie_with_mayor_dvd} = await getMovieWithMayorDVD()
+console.log (movie_with_mayor_dvd);
+
+
+
+
+// main.j
+
+// import { movis } from "./js/model/movis.js";
+
+// let objMovis = new movis();
+// console.log(await objMovis.getCountDvd());
