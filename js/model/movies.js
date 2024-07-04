@@ -154,3 +154,55 @@ export const getAllJohnDoeMovies = async () => {
         return { johndoe_movies: [] };
     }
 }
+
+
+// 16. Encontrar todas las películas de ciencia ficción que tengan al actor con id 3:
+
+
+export const getAllFictionMoviesWithActorId3 = async () => {
+    let { db, conexion } = await connect.getinstance();
+
+    const collection = db.collection('movis');
+    const pipeline = [
+        {
+          "$unwind": "$character"
+        },
+        {
+          "$lookup": {
+            "from": "authors",
+            "localField": "character.id_actor",
+            "foreignField": "id_actor",
+            "as": "actor_info"
+          }
+        },
+        {
+          "$unwind": "$actor_info"
+        },
+        {
+          "$unwind": "$genre"
+        },
+        {
+          "$match": {
+            "genre": "Ciencia Ficción",
+            "character.id_actor": 3
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "movie_name": "$name",
+            "actor_name": "$actor_info.full_name",
+            "genre": 1
+          }
+        }
+    ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+    
+    if (result.length > 0) {
+        return { sci_fi_movies_with_actor_3: result };
+    } else {
+        return { sci_fi_movies_with_actor_3: [] };
+    }
+}
