@@ -42,7 +42,7 @@ export class connect {
         let url = `${this.#host}${this.user}:${this.#pass}@${this.cluster}:${this.port}`;
         this.conexion = new MongoClient(url);
         await this.conexion.connect();
-        console.log("Mensaje de la coexion ");
+        console.log("Mensaje de la conexion: ");
         this.db = this.conexion.db(this.dbName);
     }
 }

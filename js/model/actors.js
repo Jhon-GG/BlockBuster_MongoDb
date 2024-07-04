@@ -2,6 +2,10 @@ import { connect } from "../../helpers/db/connect.js"
 import { ObjectId } from "mongodb";
 
 
+
+// ------------------------------------------------ CONSULTAS ---------------------------------------
+
+
 // 10. Encontrar el número total de actores en la base de datos:
 
 export const getTotalOfActors = async () => {

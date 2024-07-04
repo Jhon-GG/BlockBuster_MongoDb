@@ -18,6 +18,40 @@ export const getCountDvd = async()=>{
 }
 
 
+// ------------------------------------------------ CONSULTAS ---------------------------------------
+
+
+
+// 1.Contar el número total de copias de DVD disponibles en todos los registros:
+
+export const getDVDCopies = async () => {
+    let { db, conexion } = await connect.getinstance();
+
+    const collection = db.collection('movis');
+    const pipeline = [
+        { 
+            "$unwind": "$format" 
+        },
+        { 
+            "$match": { "format.name": "dvd" } 
+        },
+        {
+            "$group": {
+                "_id": null,
+                "total_copies": { "$sum": "$format.copies" }
+            }
+        }
+    ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+
+    const totalCopies = result.length > 0 ? result[0].total_copies : 0;
+
+    return { DVDCopies: totalCopies };
+}
+
+
 
 // 13. Encontrar todas las películas en las que participan actores principales:
 
@@ -204,5 +238,40 @@ export const getAllFictionMoviesWithActorId3 = async () => {
         return { sci_fi_movies_with_actor_3: result };
     } else {
         return { sci_fi_movies_with_actor_3: [] };
+    }
+}
+
+
+// 17. Encontrar la película con más copias disponibles en formato DVD:
+
+
+export const getMovieWithMayorDVD = async () => {
+    let { db, conexion } = await connect.getinstance();
+
+    const collection = db.collection('movis');
+    const pipeline = [
+        { "$unwind": "$format" },
+        { "$match": { "format.name": "dvd" } },
+        { "$sort": { "format.copies": -1 } },
+        { "$limit": 1 },
+        {
+            "$project": {
+                "_id": 1,
+                "name": 1,
+                "format": {
+                    "name": "$format.name",
+                    "copies": "$format.copies"
+                }
+            }
+        }
+    ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+    
+    if (result.length > 0) {
+        return { movie_with_mayor_dvd: result };
+    } else {
+        return { movie_with_mayor_DVD: [] };
     }
 }
