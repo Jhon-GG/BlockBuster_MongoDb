@@ -36,6 +36,30 @@ export const getActorsWithOscarAward = async () => {
 
 
 
+// 3. Encontrar la cantidad total de premios que ha ganado cada actor:
+
+
+
+export const getActorsAward = async () => {
+    let { db, conexion } = await connect.getinstance();
+
+    const collection = db.collection('authors');
+    const pipeline = [
+        {
+            "$project": {
+                "_id": 0,
+                "full_name": 1,
+                "total_awards": { "$size": "$awards" }
+            }
+        }
+    ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+    return result;
+}
+
+
 // 10. Encontrar el número total de actores en la base de datos:
 
 export const getTotalOfActors = async () => {
