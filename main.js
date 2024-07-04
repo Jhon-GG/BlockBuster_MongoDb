@@ -3,7 +3,8 @@ import { getCountDvd } from "./js/model/movies.js";
 
 
 import { 
-    getTotalOfActors
+    getTotalOfActors,
+    getAverageOfActorsAge
 } from "./js/model/actors.js";
 
 
@@ -13,4 +14,5 @@ import {
 // Consultas
 
 
-console.log (await getTotalOfActors());
+// console.log (await getTotalOfActors());
+console.log (await getAverageOfActorsAge());
