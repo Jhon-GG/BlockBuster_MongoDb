@@ -59,3 +59,46 @@ export const getMoviesWithMainActors = async () => {
         .replace(/"actors": \[/g, '"actors": ')
         .replace(/{\n    "name"/g, 'Object\n    "name"');
 }
+
+
+// 14. Encontrar el número total de premios que se han otorgado en todas las películas:
+
+export const getTotalMoviesAwards = async () => {
+    let { db, conexion } = await connect.getinstance();
+
+    const collection = db.collection('movis');
+    const pipeline = [
+        {
+            $unwind: "$character"
+        },
+        {
+            $lookup: {
+                from: "authors",
+                localField: "character.id_actor",
+                foreignField: "id_actor",
+                as: "actor_info"
+            }
+        },
+        {
+            $unwind: "$actor_info"
+        },
+        {
+            $unwind: "$actor_info.awards"
+        },
+        {
+            $group: {
+                _id: null,
+                total_awards: { $sum: 1 }
+            }
+        }
+    ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+    
+    if (result.length > 0) {
+        return { movie_awards: result[0].total_awards };
+    } else {
+        return { movie_awards: 0 };
+    }
+}
