@@ -13,6 +13,7 @@ import {
 
 
 import { 
+    getActorsWithOscarAward,
     getTotalOfActors,
     getAverageOfActorsAge,
     getActorsWithInstagram
@@ -25,7 +26,10 @@ import {
 // Consultas
 
 
-console.log (await getDVDCopies());
+// console.log (await getDVDCopies());
+console.log (await getActorsWithOscarAward());
+
+
 // console.log (await getTotalOfActors());
 // console.log (await getAverageOfActorsAge());
 // console.log (await getActorsWithInstagram());
