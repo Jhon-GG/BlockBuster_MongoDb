@@ -4,7 +4,8 @@ import { getCountDvd } from "./js/model/movies.js";
 
 import { 
     getTotalOfActors,
-    getAverageOfActorsAge
+    getAverageOfActorsAge,
+    getActorsWithInstagram
 } from "./js/model/actors.js";
 
 
@@ -15,4 +16,5 @@ import {
 
 
 // console.log (await getTotalOfActors());
-console.log (await getAverageOfActorsAge());
+// console.log (await getAverageOfActorsAge());
+console.log (await getActorsWithInstagram());
