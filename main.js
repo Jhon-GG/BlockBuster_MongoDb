@@ -16,6 +16,8 @@ import {
     getActorsWithOscarAward,
     getTotalOfActors,
     getActorsAward,
+    getBornLater1980,
+    getMostAwardActors,
     getAverageOfActorsAge,
     getActorsWithInstagram
 } from "./js/model/actors.js";
@@ -29,7 +31,11 @@ import {
 
 // console.log (await getDVDCopies());
 // console.log (await getActorsWithOscarAward());
-console.log (await getActorsAward());
+// console.log (await getActorsAward());
+// console.log (await getBornLater1980());
+console.log (await getMostAwardActors());
+
+
 
 
 // console.log (await getTotalOfActors());

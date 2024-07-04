@@ -60,6 +60,67 @@ export const getActorsAward = async () => {
 }
 
 
+
+// 4.Obtener todos los actores nacidos después de 1980:
+
+export const getBornLater1980 = async () => {
+    let { db, conexion } = await connect.getinstance();
+
+    const collection = db.collection('authors');
+    const pipeline = [
+        {
+            $match: {
+                "date_of_birth": { $gt: "1980-01-01" }
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "full_name": 1,
+                "date_of_birth": 1
+            }
+        }
+    ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+    return result;
+}
+
+
+
+
+// 5.Encontrar el actor con más premios:
+
+export const getMostAwardActors = async () => {
+    let { db, conexion } = await connect.getinstance();
+
+    const collection = db.collection('authors');
+    const pipeline = [
+        {
+            "$project": {
+                "_id": 0,
+                "full_name": 1,
+                "total_awards": { "$size": "$awards" }
+            }
+        },
+        {
+            "$sort": { "total_awards": -1 }
+        },
+        {
+            "$limit": 1
+        }
+    ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+
+    return result[0] || null;
+}
+
+
+
+
 // 10. Encontrar el número total de actores en la base de datos:
 
 export const getTotalOfActors = async () => {
