@@ -189,6 +189,76 @@ export const getAllDVDCopies = async () => {
 
 
 
+// 9.Encontrar todas las películas en las que John Doe ha actuado
+
+export const getJohnDueMovies = async () => {
+    let { db, conexion } = await connect.getinstance();
+    const collection = db.collection('movis');
+    const pipeline = [
+        {
+            $match: {
+                "character.id_actor": 1
+            }
+        },
+        {
+            $lookup: {
+                from: "authors",
+                localField: "character.id_actor",
+                foreignField: "id_actor",
+                as: "actor_info"
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                name: 1,
+                genre: 1,
+                character: {
+                    $filter: {
+                        input: "$character",
+                        as: "char",
+                        cond: { $eq: ["$$char.id_actor", 1] }
+                    }
+                },
+                format: {
+                    $map: {
+                        input: "$format",
+                        as: "fmt",
+                        in: {
+                            name: "$$fmt.name",
+                            copies: "$$fmt.copies",
+                            value: "$$fmt.value"
+                        }
+                    }
+                },
+                actor_info: { $arrayElemAt: ["$actor_info", 0] }
+            }
+        }
+    ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+
+    const formattedResult = result.map(movie => ({
+        name: movie.name,
+        genre: movie.genre.join(", "),
+        character: movie.character.map(char => ({
+            rol: char.rol,
+            apodo: char.apodo
+        })),
+        format: movie.format.map(fmt => `${fmt.name} (${fmt.copies} copies, $${fmt.value})`),
+        actor: {
+            full_name: movie.actor_info.full_name,
+            date_of_birth: movie.actor_info.date_of_birth,
+            nationality: movie.actor_info.nationality
+        }
+    }));
+
+    return { JohnDue_movies: formattedResult[0] };
+}
+
+
+
 
 // 13. Encontrar todas las películas en las que participan actores principales:
 

@@ -14,7 +14,8 @@ import {
     getAllBlurayValue,
     getAllMoviesWithActor2,
     getMoviesForActor,
-    getAllDVDCopies
+    getAllDVDCopies,
+    getJohnDueMovies
 } from "./js/model/movies.js";
 
 
@@ -48,7 +49,11 @@ import {
 // console.log(movies_for_actor);
 
 
-console.log(await getAllDVDCopies());
+// console.log(await getAllDVDCopies());
+
+
+let { movies_for_actor } = await getJohnDueMovies();
+console.log(JohnDue_movies);
 
 
 // console.log (await getTotalOfActors());
