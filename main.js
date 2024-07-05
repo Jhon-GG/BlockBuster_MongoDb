@@ -8,6 +8,7 @@ import {
     getTotalMoviesAwards,
     getAllJohnDoeMovies,
     getAllFictionMoviesWithActorId3,
+    getDistinctGenres,
     getMovieWithMayorDVD,
     getAllBlurayValue,
     getAllMoviesWithActor2
@@ -37,6 +38,7 @@ import {
 // console.log (await getActorsAward());
 // console.log (await getBornLater1980());
 // console.log (await getMostAwardActors());
+console.log (await getDistinctGenres());
 
 
 
@@ -55,7 +57,7 @@ import {
 
 // console.log(await getActorsWithAwardsLater2015());
 // console.log(await getAllBlurayValue());
-console.log(await getAllMoviesWithActor2());
+// console.log(await getAllMoviesWithActor2());
 
 
 
