@@ -19,7 +19,8 @@ import {
     getBornLater1980,
     getMostAwardActors,
     getAverageOfActorsAge,
-    getActorsWithInstagram
+    getActorsWithInstagram,
+    getActorsWithAwardsLater2015
 } from "./js/model/actors.js";
 
 
@@ -46,9 +47,11 @@ import {
 // console.log (await getAllJohnDoeMovies());
 // console.log (await getAllFictionMoviesWithActorId3());
 
-let {movie_with_mayor_dvd} = await getMovieWithMayorDVD()
-console.log (movie_with_mayor_dvd);
+// let {movie_with_mayor_dvd} = await getMovieWithMayorDVD()
+// console.log (movie_with_mayor_dvd);
 
+
+console.log(await getActorsWithAwardsLater2015());
 
 
 

@@ -231,4 +231,36 @@ export const getActorsWithInstagram = async () => {
 
 // 18. Encontrar todos los actores que han ganado premios después de 2015:
 
+export const getActorsWithAwardsLater2015 = async () => {
+    let { db, conexion } = await connect.getinstance();
+
+    const collection = db.collection('authors');
+    const pipeline = [
+        { "$match": 
+        { "awards.year": { "$gt": 2015 } } 
+          
+        },
+        { "$unwind": "$awards" 
+          
+        },
+          {
+              "$project": {
+                  "_id": 1,
+                  "full_name": 1,
+                  "name": "$awards.name",
+                  "year": "$awards.year",
+                  "category": "$awards.category"
+              }
+          }
+      ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+    
+    if (result.length > 0) {
+        return { awards_later_2015: result };
+    } else {
+        return { awards_later_2015: [] };
+    }
+}
 
