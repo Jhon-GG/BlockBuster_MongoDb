@@ -318,6 +318,49 @@ export const getAllBlurayValue = async () => {
     }
 }
 
+
+
+
+// 20. Encontrar todas las películas en las que el actor con id 2 haya participado:
+
+
+export const getAllMoviesWithActor2 = async () => {
+    let { db, conexion } = await connect.getinstance();
+
+    const collection = db.collection('movis');
+    const pipeline = [
+        { "$match": 
+        { "character.id_actor": 2 }
+        },
+        {
+            "$lookup": {
+                "from": "authors",
+                "localField": "character.id_actor",
+                "foreignField": "id_actor",
+                "as": "actors"
+            }
+        },
+        {
+            "$project": {
+                "_id": 1,
+                "name": 1,
+                "actor_name": { "$arrayElemAt": ["$actors.full_name", 1] }
+            }
+        }
+    ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+    
+    if (result.length > 0) {
+        return { movies_actor_2: result };
+    } else {
+        return { movies_actor_2: [] };
+    }
+}
+
+
+
 // movis.js
 
 // import { ObjectId } from "mongodb";
