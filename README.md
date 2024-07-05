@@ -3,7 +3,7 @@
 1. **Contar el número total de copias de DVD disponibles en todos los registros:**
 
    ```javascript
-   [
+   db.movis.aggregate([
        { 
            "$unwind": "$format" 
        },
@@ -16,13 +16,12 @@
                "total_copies": { "$sum": "$format.copies" }
            }
        }
-   ]
-   ```
+   ]);
 
 2. **Encontrar todos los actores que han ganado premios Oscar:**
 
    ```javascript
-   [
+   db.authors.aggregate([
        {
            "$unwind": "$awards"
        },
@@ -36,26 +35,26 @@
                "awards": 1
            }
        }
-   ]
+   ]);
    ```
 
 3. **Encontrar la cantidad total de premios que ha ganado cada actor:**
 
    ```javascript
-   [
+   db.authors.aggregate([
        {
            "$project": {
                "full_name": 1,
                "total_awards": { "$size": "$awards" }
            }
        }
-   ]
+   ]);
    ```
 
 4. **Obtener todos los actores nacidos después de 1980:**
 
    ```javascript
-   [
+   db.authors.aggregate([
      {
        $match: {
          "date_of_birth": {$gt: "1980-01-01"}
@@ -68,13 +67,13 @@
          "date_of_birth": 1
        }
      }
-   ]
+   ]);
    ```
 
 5. **Encontrar el actor con más premios:**
 
    ```javascript
-   [
+   db.authors.aggregate([
        {
            "$project": {
                "full_name": 1,
@@ -87,13 +86,13 @@
        {
            "$limit": 1
        }
-   ]
+   ]);
    ```
 
 6. **Listar todos los géneros de películas distintos:**
 
    ```javascript
-   [
+   db.movis.aggregate([
        {
            "$unwind": "$genre"
        },
@@ -105,25 +104,25 @@
        {
            "$sort": { "_id": 1 }
        }
-   ]
+   ]);
    ```
 
 7. **Encontrar películas donde el actor con id 1 haya participado:**
 
    ```javascript
-   [
+   db.movis.aggregate([
      {
        $match: {
          "character.id_actor":1
        }
      }
-   ]
+   ]);
    ```
 
 8. **Calcular el valor total de todas las copias de DVD disponibles:**
 
    ```javascript
-   [
+   db.movis.aggregate([
        {
            "$unwind": "$format"
        },
@@ -142,39 +141,39 @@
                }
            }
        }
-   ]
+   ]);
    ```
 
 9. **Encontrar todas las películas en las que John Doe ha actuado:**
 
    ```javascript
-   [
+   db.movis.aggregate([
      {
        $match: {
          "character.id_actor": 1
        }
      }
-   ]
+   ]);
    ```
 
 10. **Encontrar el número total de actores en la base de datos:**
 
     ```javascript
-    [
+    db.authors.aggregate([
       {
         "$group": {
           "_id": null,
           "total_actors": { "$sum": 1 }
         }
       }
-    ]
+    ]);
     
     ```
 
 11. **Encontrar la edad promedio de los actores en la base de datos:**
 
     ```javascript
-    [
+        db.authors.aggregate([
       {
         "$addFields": {
           "date_of_birth": { "$toDate": "$date_of_birth" }
@@ -196,13 +195,13 @@
           "average_age": { "$avg": "$age" }
         }
       }
-    ]
+    ]);
     ```
 
 12. **Encontrar todos los actores que tienen una cuenta de Instagram:**
 
     ```javascript
-    [
+        db.authors.aggregate([
         {
             "$match": {
                 "social_media.instagram": { "$exists": true, "$ne": "" }
@@ -221,13 +220,13 @@
                 "website": 1
             }
         }
-    ]
+    ]);
     ```
 
 13. **Encontrar todas las películas en las que participan actores principales:**
 
     ```javascript
-    [
+    db.movis.aggregate([
       { "$unwind": "$character" 
         
       },
@@ -246,13 +245,13 @@
           } 
         } 
       }
-    ]
+    ]);
     ```
 
 14. **Encontrar el número total de premios que se han otorgado en todas las películas:**
 
     ```javascript
-    [
+    db.movis.aggregate([
         {
             $unwind: "$character"
         },
@@ -276,13 +275,13 @@
                 total_award: {$sum: 1}
             }
         }
-    ]
+    ]);
     ```
 
 15. **Encontrar todas las películas en las que John Doe ha actuado y que estén en formato Blu-ray:**
 
     ```javascript
-    [
+    db.movis.aggregate([
       {
         "$lookup": {
           "from": "authors",
@@ -308,13 +307,13 @@
           "format": "$format.name"
         }
       }
-    ]
+    ]);
     ```
 
 16. **Encontrar todas las películas de ciencia ficción que tengan al actor con id 3:**
 
     ```javascript
-    [
+    db.movis.aggregate([
       {
         "$lookup": {
           "from": "authors",
@@ -340,13 +339,13 @@
           "genre": 1
         }
       }
-    ]
+    ]);
     ```
 
 17. **Encontrar la película con más copias disponibles en formato DVD:**
 
     ```javascript
-    [
+    db.movis.aggregate([
         { "$unwind": "$format" 
           
         },
@@ -371,13 +370,13 @@
                 "format.copies": 1
             }
         }
-    ]
+    ]);
     ```
 
 18. **Encontrar todos los actores que han ganado premios después de 2015:**
 
     ```javascript
-    [
+    db.authors.aggregate([
       { "$match": 
       { "awards.year": { "$gt": 2015 } } 
         
@@ -394,13 +393,13 @@
                 "category": "$awards.category"
             }
         }
-    ]
+    ]);
     ```
 
 19. **Calcular el valor total de todas las copias de Blu-ray disponibles:**
 
     ```javascript
-    [
+    db.movis.aggregate([
         { "$unwind": "$format" 
           
         },
@@ -415,13 +414,13 @@
                 "total_value": { "$sum": { "$multiply": ["$format.copies", "$format.value"] } }
             }
         }
-    ]
+    ]);
     ```
 
 20. **Encontrar todas las películas en las que el actor con id 2 haya participado:**
 
     ```javascript
-    [
+    db.movis.aggregate([
         { "$match": 
         { "character.id_actor": 2 }
         },
@@ -440,6 +439,6 @@
                 "actor_name": { "$arrayElemAt": ["$actors.full_name", 1] }
             }
         }
-    ]
+    ]);
     ```
 
