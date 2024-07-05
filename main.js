@@ -8,7 +8,8 @@ import {
     getTotalMoviesAwards,
     getAllJohnDoeMovies,
     getAllFictionMoviesWithActorId3,
-    getMovieWithMayorDVD
+    getMovieWithMayorDVD,
+    getAllBlurayValue
 } from "./js/model/movies.js";
 
 
@@ -51,7 +52,8 @@ import {
 // console.log (movie_with_mayor_dvd);
 
 
-console.log(await getActorsWithAwardsLater2015());
+// console.log(await getActorsWithAwardsLater2015());
+console.log(await getAllBlurayValue());
 
 
 
