@@ -13,7 +13,8 @@ import {
     getMovieWithMayorDVD,
     getAllBlurayValue,
     getAllMoviesWithActor2,
-    getMoviesForActor
+    getMoviesForActor,
+    getAllDVDCopies
 } from "./js/model/movies.js";
 
 
@@ -41,9 +42,13 @@ import {
 // console.log (await getBornLater1980());
 // console.log (await getMostAwardActors());
 // console.log (await getDistinctGenres());
-let { movies_for_actor } = await getMoviesForActor();
-console.log(movies_for_actor);
 
+
+// let { movies_for_actor } = await getMoviesForActor();
+// console.log(movies_for_actor);
+
+
+console.log(await getAllDVDCopies());
 
 
 // console.log (await getTotalOfActors());
