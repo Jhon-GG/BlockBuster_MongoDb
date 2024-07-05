@@ -1,4 +1,5 @@
 import { connect } from "./helpers/db/connect.js";
+import util from 'util';
 
 
 import { 
@@ -11,7 +12,8 @@ import {
     getDistinctGenres,
     getMovieWithMayorDVD,
     getAllBlurayValue,
-    getAllMoviesWithActor2
+    getAllMoviesWithActor2,
+    getMoviesForActor
 } from "./js/model/movies.js";
 
 
@@ -38,8 +40,9 @@ import {
 // console.log (await getActorsAward());
 // console.log (await getBornLater1980());
 // console.log (await getMostAwardActors());
-console.log (await getDistinctGenres());
-
+// console.log (await getDistinctGenres());
+let { movies_for_actor } = await getMoviesForActor();
+console.log(movies_for_actor);
 
 
 

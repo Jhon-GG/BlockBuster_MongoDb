@@ -1,5 +1,6 @@
 import { connect } from "../../helpers/db/connect.js"
 import { ObjectId } from "mongodb";
+import util from 'util';
 
 export const getCountDvd = async()=>{
     let {db, conexion} = await connect.getinstance();
@@ -81,6 +82,63 @@ export const getDistinctGenres = async () => {
     const genres = result.map(item => item._id);
 
     return genres;
+}
+
+
+
+// 7.Encontrar películas donde el actor con id 1 haya participado
+
+export const getMoviesForActor = async () => {
+    let { db, conexion } = await connect.getinstance();
+
+    const collection = db.collection('movis');
+    const pipeline = [
+        {
+            $match: {
+                "character.id_actor": 1
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                name: 1,
+                genre: 1,
+                "character": {
+                    $filter: {
+                        input: "$character",
+                        as: "char",
+                        cond: { $eq: ["$$char.id_actor", 1] }
+                    }
+                },
+                format: {
+                    $map: {
+                        input: "$format",
+                        as: "fmt",
+                        in: {
+                            name: "$$fmt.name",
+                            copies: "$$fmt.copies",
+                            value: "$$fmt.value"
+                        }
+                    }
+                }
+            }
+        }
+    ];
+
+    const result = await collection.aggregate(pipeline).toArray();
+    conexion.close();
+    
+    const formattedResult = result.map(movie => ({
+        name: movie.name,
+        genre: movie.genre.join(", "),
+        character: movie.character.map(char => ({
+            rol: char.rol,
+            apodo: char.apodo
+        })),
+        format: movie.format.map(fmt => `${fmt.name} (${fmt.copies} copies, $${fmt.value})`)
+    }));
+
+    return { movies_for_actor: formattedResult[0] }; 
 }
 
 
