@@ -52,7 +52,7 @@ import {
 // console.log(await getAllDVDCopies());
 
 
-let { movies_for_actor } = await getJohnDueMovies();
+let { JohnDue_movies } = await getJohnDueMovies();
 console.log(JohnDue_movies);
 
 
