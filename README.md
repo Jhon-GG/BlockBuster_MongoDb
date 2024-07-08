@@ -485,3 +485,9 @@
     ]);
     ```
 
+
+
+  **Comando que se usa para arrancar el main.js**
+    
+    npm run dev
+
