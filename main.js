@@ -81,6 +81,10 @@ import {authors} from './js/model/actors.js'
 let objMovis = new movis();
 
 console.log(`1.Contar el número total de copias de DVD disponibles en todos los registros:`, await objMovis.getDVDCopies());
+console.log(`6.Listar todos los géneros de películas distintos:`, await objMovis.getDistinctGenres());
+console.log(`7.Encontrar películas donde el actor con id 1 haya participado:`, await objMovis.getMoviesForActor());
+console.log(`8. Calcular el valor total de todas las copias de DVD disponibles:`, await objMovis.getAllDVDCopies());
+
 
 objMovis.destructor();
 
@@ -92,8 +96,8 @@ let objAuthors = new authors();
 console.log(`2.Encontrar todos los actores que han ganado premios Oscar:`,await objAuthors.getActorsWithOscarAward());
 console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
 console.log(`4.Obtener todos los actores nacidos después de 1980:`, await objAuthors.getBornLater1980());
+console.log(`5.Encontrar el actor con más premios:`, await objAuthors.getMostAwardActors());
 
-console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
 console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
 console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
 objAuthors.destructor();

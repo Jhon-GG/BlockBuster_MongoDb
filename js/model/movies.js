@@ -61,6 +61,128 @@ export class movis extends connect {
         await this.conexion.close();
         return { DVDcopies: data[0]?.total_copies || 0 };
     }
+
+
+    // 6.Listar todos los géneros de películas distintos:
+
+    async getDistinctGenres() {
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate([
+            {
+                "$unwind": "$genre"
+            },
+            {
+                "$group": {
+                    "_id": "$genre"
+                }
+            },
+            {
+                "$sort": { "_id": 1 }
+            },
+            {
+                "$project": {
+                    "genero": "$_id",
+                    "_id": 0
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
+        return data;
+    }
+
+
+    // 7.Encontrar películas donde el actor con id 1 haya participado:
+
+    async getMoviesForActor() {
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate([
+            {
+                "$match": {
+                    "character.id_actor": 1
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "name": 1,
+                    "genre": 1,
+                    "character": {
+                        "$filter": {
+                            "input": "$character",
+                            "as": "char",
+                            "cond": { "$eq": ["$$char.id_actor", 1] }
+                        }
+                    },
+                    "format": {
+                        "$map": {
+                            "input": "$format",
+                            "as": "fmt",
+                            "in": {
+                                "name": "$$fmt.name",
+                                "copies": "$$fmt.copies",
+                                "value": "$$fmt.value"
+                            }
+                        }
+                    }
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
+    
+        const formattedResult = data.map(movie => ({
+            name: movie.name,
+            genre: movie.genre.join(", "),
+            character: movie.character.map(char => ({
+                rol: char.rol,
+                apodo: char.apodo
+            })),
+            format: movie.format.map(fmt => `${fmt.name} (${fmt.copies} copies, $${fmt.value})`)
+        }));
+    
+        return { movies_for_actor: formattedResult[0] || null };
+    }
+    
+
+    // 8. Calcular el valor total de todas las copias de DVD disponibles:
+
+    async getAllDVDCopies() {
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate([
+            {
+                "$unwind": "$format"
+            },
+            {
+                "$match": {
+                    "format.name": "dvd"
+                }
+            },
+            {
+                "$group": {
+                    "_id": null,
+                    "total_value": {
+                        "$sum": {
+                            "$multiply": ["$format.copies", "$format.value"]
+                        }
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "total_value": { "$round": ["$total_value", 1] } 
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
+    
+        return { DVD_Copies: data[0]?.total_value || 0 };
+    }
+
+    
+    
 }
 
 // ------------------------------------------------ CONSULTAS ---------------------------------------

@@ -94,6 +94,31 @@ export class authors extends connect {
     }
     
 
+    // 5.Encontrar el actor con más premios:
+
+    async getMostAwardActors() {
+        await this.conexion.connect();
+        const collection = this.db.collection('authors');
+        const data = await collection.aggregate([
+            {
+                "$project": {
+                    "_id": 0,
+                    "full_name": 1,
+                    "total_awards": { "$size": "$awards" }
+                }
+            },
+            {
+                "$sort": { "total_awards": -1 }
+            },
+            {
+                "$limit": 1
+            }
+        ]).toArray();
+        await this.conexion.close();
+        return data[0] || null;
+    }
+    
+
 }
 
 
