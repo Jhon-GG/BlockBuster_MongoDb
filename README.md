@@ -209,24 +209,19 @@
     ```javascript
         db.authors.aggregate([
         {
-            "$match": {
-                "social_media.instagram": { "$exists": true, "$ne": "" }
-            }
+          $match: {
+            "social_media.instagram": { $exists: true, $ne: "" }
+          }
         },
         {
-            "$project": {
-                "_id": 1,
-                "id_actor": 1,
-                "full_name": 1,
-                "date_of_birth": 1,
-                "nationality": 1,
-                "biography": 1,
-                "awards": 1,
-                "social_media": 1,
-                "website": 1
-            }
+          $project: {
+          _id: 1,
+          id_actor: 1,
+          actor_name: "$full_name",
+          social_media: 1
+          }
         }
-    ]);
+        ]);
     ```
 
 13. **Encontrar todas las películas en las que participan actores principales:**
