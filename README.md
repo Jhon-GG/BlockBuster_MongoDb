@@ -292,31 +292,43 @@
 
     ```javascript
     db.movis.aggregate([
-      {
-        "$lookup": {
-          "from": "authors",
-          "localField": "character.id_actor",
-          "foreignField": "id_actor",
-          "as": "actor_info"
-        }
-      },
-      {
-        "$unwind": "$format"
-      },
-      {
-        "$match": {
-          "actor_info.full_name": "John Doe",
-          "format.name": "Bluray"
-        }
-      },
-      {
-        "$project": {
-          "_id": 0,
-          "actor_name": { "$arrayElemAt": ["$actor_info.full_name", 0] },
-          "movie_name": "$name",
-          "format": "$format.name"
-        }
+    {
+      $match: {
+        "format.name": "Bluray",
+        "character.id_actor": 1 
       }
+    },
+    {
+      $unwind: "$character"
+    },
+    {
+      $match: {
+        "character.id_actor": 1
+      }
+    },
+    {
+      $lookup: {
+      from: "authors",
+      localField: "character.id_actor",
+      foreignField: "id_actor",
+      as: "actor_info"
+      }
+    },
+    {
+      $unwind: "$actor_info"
+    },
+    {
+      $project: {
+        _id: 0,
+        movie_id: "$_id",
+        actor_id: "$character.id_actor",
+        movie_name: "$name",
+        rol: "$character.rol",
+        apodo: "$character.apodo",
+        actor_name: "$actor_info.full_name",
+        format_name: "Bluray"
+      }
+    }
     ]);
     ```
 
@@ -324,31 +336,41 @@
 
     ```javascript
     db.movis.aggregate([
-      {
-        "$lookup": {
-          "from": "authors",
-          "localField": "character.id_actor",
-          "foreignField": "id_actor",
-          "as": "actor_info"
-        }
-      },
-      {
-        "$unwind": "$genre"
-      },
-      {
-        "$match": {
-          "genre": "Ciencia Ficción",
-          "character.id_actor": 3
-        }
-      },
-      {
-        "$project": {
-          "_id": 3,
-          "movie_name": "$name",
-          "actor_name": { "$arrayElemAt": ["$actor_info.full_name", 2] },
-          "genre": 1
-        }
+    {
+      $match: {
+        genre: "Ciencia Ficción",
       }
+    },
+    {
+      $unwind: "$character"
+    },
+    {
+      $match: {
+        "character.id_actor": 3
+      }
+    },
+    {
+      $lookup: {
+        from: "authors",
+        localField: "character.id_actor",
+        foreignField: "id_actor",
+        as: "actor_info"
+      }
+    },
+    {
+      $unwind: "$actor_info"
+    },
+    {
+      $project: {
+        movie_id: "$_id",
+        movie_name: "$name",
+        actor_id: "$character.id_actor",
+        actor_name: "$actor_info.full_name",
+        rol: "$character.rol",
+        apodo: "$character.apodo",
+        genero: "Ciencia Ficción"
+      }
+    }
     ]);
     ```
 
