@@ -227,26 +227,35 @@
 13. **Encontrar todas las películas en las que participan actores principales:**
 
     ```javascript
-    db.movis.aggregate([
-      { "$unwind": "$character" 
-        
-      },
-      { "$match": { "character.rol": "principal" } 
-        
-      },
-      { 
-        "$group": { 
-          "_id": "$_id", 
-          "name": { "$first": "$name" }, 
-          "actors": { 
-            "$push": { 
-              "name": "$character.apodo", 
-              "rol": "$character.rol" 
-            } 
-          } 
-        } 
-      }
-    ]);
+    db.movis.aggregate(            [
+    {
+      $unwind: "$character"
+    },
+                {
+                  $match: { "character.rol": "principal" }
+                },
+                {
+                  $lookup: {
+                    from: "authors",
+                    localField: "character.id_actor",
+                    foreignField: "id_actor",
+                    as: "actor_info"
+                  }
+                },
+                {
+                  $unwind: "$actor_info"
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    movie_name: "$name",
+                    role: "$character.rol",
+                    nickname: "$character.apodo",
+                    actor_id: "$character.id_actor",
+                    actor_name: "$actor_info.full_name"
+                  }
+                }
+              ]);
     ```
 
 14. **Encontrar el número total de premios que se han otorgado en todas las películas:**
