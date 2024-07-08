@@ -119,6 +119,85 @@ export class authors extends connect {
     }
     
 
+    // 10. Encontrar el número total de actores en la base de datos:
+
+    async getTotalOfActors() {
+        await this.conexion.connect();
+        const collection = this.db.collection('authors');
+        const data = await collection.aggregate([
+            {
+                "$group": {
+                    "_id": null,
+                    "total_actors": { "$sum": 1 }
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
+    
+        return { total_of_actors: data[0]?.total_actors || 0 };
+    }    
+    
+
+    // 11. Encontrar la edad promedio de los actores en la base de datos:
+
+    async getAverageOfActorsAge() {
+        await this.conexion.connect();
+        const collection = this.db.collection('authors');
+        const data = await collection.aggregate([
+            {
+                "$addFields": {
+                    "date_of_birth": { "$toDate": "$date_of_birth" }
+                }
+            },
+            {
+                "$addFields": {
+                    "age": {
+                        "$divide": [
+                            { "$subtract": [new Date(), "$date_of_birth"] },
+                            1000 * 60 * 60 * 24 * 365
+                        ]
+                    }
+                }
+            },
+            {
+                "$group": {
+                    "_id": null,
+                    "average_age": { "$avg": "$age" }
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
+    
+        return { average_actors_age: data[0]?.average_age || 0 };
+    }
+    
+
+    // 12.Encontrar todos los actores que tienen una cuenta de Instagram
+
+    async getActorsWithInstagram(){
+        await this.conexion.connect();
+        const collection = this.db.collection('authors');
+        const data = await collection.aggregate(
+            [
+                {
+                  $match: {
+                    "social_media.instagram": { $exists: true, $ne: "" }
+                  }
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    id_actor: 1,
+                    actor_name: "$full_name",
+                    social_media: 1
+                  }
+                }
+              ]
+        ).toArray();
+        await this.conexion.close();
+        return data;
+    }
+
 }
 
 

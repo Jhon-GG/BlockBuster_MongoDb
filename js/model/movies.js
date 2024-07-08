@@ -182,7 +182,199 @@ export class movis extends connect {
     }
 
     
+    // 9.Encontrar todas las películas en las que John Doe ha actuado:
+
+    async getJohnDueMovies() {
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate([
+            {
+                "$match": {
+                    "character.id_actor": 1
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "authors",
+                    "localField": "character.id_actor",
+                    "foreignField": "id_actor",
+                    "as": "actor_info"
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "name": 1,
+                    "genre": 1,
+                    "character": {
+                        "$filter": {
+                            "input": "$character",
+                            "as": "char",
+                            "cond": { "$eq": ["$$char.id_actor", 1] }
+                        }
+                    },
+                    "format": {
+                        "$map": {
+                            "input": "$format",
+                            "as": "fmt",
+                            "in": {
+                                "name": "$$fmt.name",
+                                "copies": "$$fmt.copies",
+                                "value": "$$fmt.value"
+                            }
+                        }
+                    },
+                    "actor_info": { "$arrayElemAt": ["$actor_info", 0] }
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
     
+        const formattedResult = data.map(movie => ({
+            name: movie.name,
+            genre: movie.genre.join(", "),
+            character: movie.character.map(char => ({
+                rol: char.rol,
+                apodo: char.apodo
+            })),
+            format: movie.format.map(fmt => `${fmt.name} (${fmt.copies} copies, $${fmt.value})`),
+            actor: {
+                full_name: movie.actor_info.full_name,
+                date_of_birth: movie.actor_info.date_of_birth,
+                nationality: movie.actor_info.nationality
+            }
+        }));
+    
+        return { JohnDue_movies: formattedResult[0] || null };
+    }
+    
+
+    // 13.Encontrar todas las películas en las que participan actores principales:
+
+    async getMoviesWithMainActors(){
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate(
+            [
+                {
+                  $unwind: "$character"
+                },
+                {
+                  $match: { "character.rol": "principal" }
+                },
+                {
+                  $lookup: {
+                    from: "authors",
+                    localField: "character.id_actor",
+                    foreignField: "id_actor",
+                    as: "actor_info"
+                  }
+                },
+                {
+                  $unwind: "$actor_info"
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    movie_name: "$name",
+                    role: "$character.rol",
+                    nickname: "$character.apodo",
+                    actor_id: "$character.id_actor",
+                    actor_name: "$actor_info.full_name"
+                  }
+                }
+              ]
+        ).toArray();
+        await this.conexion.close();
+        return data;
+    }
+
+
+    // 14. Encontrar el número total de premios que se han otorgado en todas las películas:
+
+    async getTotalMoviesAwards() {
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate([
+            {
+                "$unwind": "$character"
+            },
+            {
+                "$lookup": {
+                    "from": "authors",
+                    "localField": "character.id_actor",
+                    "foreignField": "id_actor",
+                    "as": "actor_info"
+                }
+            },
+            {
+                "$unwind": "$actor_info"
+            },
+            {
+                "$unwind": "$actor_info.awards"
+            },
+            {
+                "$group": {
+                    "_id": null,
+                    "total_awards": { "$sum": 1 }
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
+    
+        return { movie_awards: data[0]?.total_awards || 0 };
+    }
+    
+    
+     // 15.Encontrar todas las películas en las que John Doe ha actuado y que estén en formato Blu-ray:
+
+     async getAllJohnDoeMovies(){
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate(
+            [
+                {
+                  $match: {
+                    "format.name": "Bluray",
+                    "character.id_actor": 1 
+                  }
+                },
+                {
+                  $unwind: "$character"
+                },
+                {
+                  $match: {
+                    "character.id_actor": 1
+                  }
+                },
+                {
+                  $lookup: {
+                    from: "authors",
+                    localField: "character.id_actor",
+                    foreignField: "id_actor",
+                    as: "actor_info"
+                  }
+                },
+                {
+                  $unwind: "$actor_info"
+                },
+                {
+                  $project: {
+                    _id: 0,
+                    movie_id: "$_id",
+                    actor_id: "$character.id_actor",
+                    movie_name: "$name",
+                    rol: "$character.rol",
+                    apodo: "$character.apodo",
+                    actor_name: "$actor_info.full_name",
+                    format_name: "Bluray"
+                  }
+                }
+              ]
+        ).toArray();
+        await this.conexion.close();
+        return data;
+    }
 }
 
 // ------------------------------------------------ CONSULTAS ---------------------------------------

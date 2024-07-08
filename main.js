@@ -84,8 +84,10 @@ console.log(`1.Contar el número total de copias de DVD disponibles en todos los
 console.log(`6.Listar todos los géneros de películas distintos:`, await objMovis.getDistinctGenres());
 console.log(`7.Encontrar películas donde el actor con id 1 haya participado:`, await objMovis.getMoviesForActor());
 console.log(`8. Calcular el valor total de todas las copias de DVD disponibles:`, await objMovis.getAllDVDCopies());
-
-
+console.log(`9.Encontrar todas las películas en las que John Doe ha actuado:`, await objMovis.getJohnDueMovies());
+console.log(`13.Encontrar todas las películas en las que participan actores principales:`, await objMovis.getMoviesWithMainActors());
+console.log(`14. Encontrar el número total de premios que se han otorgado en todas las películas:`, await objAuthors.getTotalMoviesAwards());
+console.log(`15. Encontrar todas las películas en las que John Doe ha actuado y que están en formato Blu-ray:`, await objMovis.getAllJohnDoeMovies());
 objMovis.destructor();
 
 
@@ -97,7 +99,9 @@ console.log(`2.Encontrar todos los actores que han ganado premios Oscar:`,await 
 console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
 console.log(`4.Obtener todos los actores nacidos después de 1980:`, await objAuthors.getBornLater1980());
 console.log(`5.Encontrar el actor con más premios:`, await objAuthors.getMostAwardActors());
+console.log(`10. Encontrar el número total de actores en la base de datos::`, await objAuthors.getTotalOfActors());
+console.log(`11. Encontrar el promedio de edad de todos los actores en la base de datos:`, await objAuthors.getAverageOfActorsAge());
+console.log(`12. Encontrar todos los actores que tienen una cuenta de Instagram:`, await objAuthors.getActorsWithInstagram());
 
-console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
 console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
 objAuthors.destructor();
