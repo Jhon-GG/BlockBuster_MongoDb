@@ -375,7 +375,156 @@ export class movis extends connect {
         await this.conexion.close();
         return data;
     }
+
+
+    // 16.Encontrar todas las películas de ciencia ficción que tengan al actor con id 3:
+
+    async getAllFictionMoviesWithActorId3(){
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate(
+            [
+                {
+                  $match: {
+                    genre: "Ciencia Ficción",
+                  }
+                },
+                {
+                  $unwind: "$character"
+                },
+                {
+                  $match: {
+                    "character.id_actor": 3
+                  }
+                },
+                {
+                  $lookup: {
+                    from: "authors",
+                    localField: "character.id_actor",
+                    foreignField: "id_actor",
+                    as: "actor_info"
+                  }
+                },
+                {
+                  $unwind: "$actor_info"
+                },
+                {
+                  $project: {
+                    movie_id: "$_id",
+                    movie_name: "$name",
+                    actor_id: "$character.id_actor",
+                    actor_name: "$actor_info.full_name",
+                    rol: "$character.rol",
+                    apodo: "$character.apodo",
+                    genero: "Ciencia Ficción"
+                  }
+                }
+              ]
+        ).toArray();
+        await this.conexion.close();
+        return data;
+    }
+
+
+    // 17. Encontrar la película con más copias disponibles en formato DVD:
+
+    async getMovieWithMayorDVD() {
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate([
+            { "$unwind": "$format" },
+            { "$match": { "format.name": "dvd" } },
+            { "$sort": { "format.copies": -1 } },
+            { "$limit": 1 },
+            {
+                "$project": {
+                    "_id": 1,
+                    "name": 1,
+                    "format": {
+                        "name": "$format.name",
+                        "copies": "$format.copies"
+                    }
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
+    
+        return { movie_with_mayor_dvd: data };
+    }
+    
+
+    // 19. Calcular el valor total de todas las copias de Blu-ray disponibles:
+
+    async getAllBlurayValue() {
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate([
+            { "$unwind": "$format" },
+            { "$match": { "format.name": "Bluray" } },
+            {
+                "$group": {
+                    "_id": null,
+                    "total_value": { "$sum": { "$multiply": ["$format.copies", "$format.value"] } }
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "total_value": 1
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
+    
+        return { bluray_value: data };
+    }
+    
+    
+    // 20.Encontrar todas las películas en las que el actor con id 2 haya participado:
+
+    async getAllMoviesWithActor2(){
+        await this.conexion.connect();
+        const collection = this.db.collection('movis');
+        const data = await collection.aggregate(
+            [
+                {
+                  $match: { "character.id_actor": 2 }
+                },
+                {
+                  $unwind: "$character"
+                },
+                {
+                  $match: { "character.id_actor": 2 }
+                },
+                {
+                  $lookup: {
+                    from: "authors",
+                    localField: "character.id_actor",
+                    foreignField: "id_actor",
+                    as: "actor_info"
+                  }
+                },
+                {
+                  $unwind: "$actor_info"
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    movie_name: "$name",
+                    actor_id: "$character.id_actor",
+                    actor_name: "$actor_info.full_name",
+                    role: "$character.rol"
+                  }
+                }
+              ]
+        ).toArray();
+        await this.conexion.close();
+        return data;
+    }
 }
+
+
+
 
 // ------------------------------------------------ CONSULTAS ---------------------------------------
 
