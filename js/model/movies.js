@@ -2,22 +2,71 @@ import { connect } from "../../helpers/db/connect.js"
 import { ObjectId } from "mongodb";
 import util from 'util';
 
-export const getCountDvd = async()=>{
-    let {db, conexion} = await connect.getinstance();
+// export const getCountDvd = async()=>{
+//     let {db, conexion} = await connect.getinstance();
 
-    const collection = db.collection('movis');
-    const data = await collection.find(
-        {
-            format:{
-                $elemMatch: {name: {$eq: "dvd"}}
-            }
+//     const collection = db.collection('movis');
+//     const data = await collection.find(
+//         {
+//             format:{
+//                 $elemMatch: {name: {$eq: "dvd"}}
+//             }
+//         }
+//     ).toArray();
+//     conexion.close();
+//     return {countByMoviDVD: data.length};
+
+// }
+
+
+export class movis extends connect {
+    static instanceMovis;
+    db;
+    collection;
+
+    constructor(){
+        if (movis.instanceMovis){
+            return movis.instanceMovis;
         }
-    ).toArray();
-    conexion.close();
-    return {countByMoviDVD: data.length};
+        super();
+        this.db = this.conexion.db(this.getDbName);
+        this.collection = this.db.collection('movis');
+        movis.instanceMovis = this;
+    }
+    destructor(){
+        movis.instanceMovis = undefined;
+        connect.instanceConnect = undefined;
+    }
 
+
+    // 1.Contar el número total de copias de DVD disponibles en todos los registros:
+    
+    async getDVDCopies() {
+        await this.conexion.connect();
+        
+        const pipeline = [
+            { 
+                "$unwind": "$format" 
+            },
+            { 
+                "$match": { "format.name": "dvd" } 
+            },
+            {
+                "$group": {
+                    "_id": null,
+                    "total_copies": { "$sum": "$format.copies" }
+                }
+            }
+        ];
+    
+        const result = await this.collection.aggregate(pipeline).toArray();
+        await this.conexion.close();
+    
+        const totalCopies = result.length > 0 ? result[0].total_copies : 0;
+    
+        return { DVDCopies: totalCopies };
+    }
 }
-
 
 // ------------------------------------------------ CONSULTAS ---------------------------------------
 

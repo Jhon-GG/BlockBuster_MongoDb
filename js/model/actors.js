@@ -4,6 +4,59 @@ import util from 'util';
 
 
 
+export class authors extends connect {
+    static instanceAuthors;
+    db;
+    collection;
+
+    constructor(){
+        if (authors.instanceauthors){
+            return authors.instanceauthors;
+        }
+        super();
+        this.db = this.conexion.db(this.getDbName);
+        this.collection = this.db.collection('authors');
+        authors.instanceAuthors = this;
+    }
+    destructor(){
+        authors.instanceAuthors = undefined;
+        connect.instanceConnect = undefined;
+    }
+
+
+    // 2.Encontrar todos los actores que han ganado premios Oscar
+
+    async getActorsWithOscarAward() {
+        await this.conexion.connect();
+    
+        const pipeline = [
+            {
+                "$unwind": "$awards"
+            },
+            {
+                "$match": { "awards.name": "Oscar Award" }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "full_name": 1,
+                    "awards.name": 1,
+                    "awards.year": 1,
+                    "awards.category": 1
+                }
+            }
+        ];
+    
+        const result = await this.collection.aggregate(pipeline).toArray();
+        await this.conexion.close();
+    
+        return result;
+    }
+    
+}
+
+
+
 // ------------------------------------------------ CONSULTAS ---------------------------------------
 
 // 2.Encontrar todos los actores que han ganado premios Oscar

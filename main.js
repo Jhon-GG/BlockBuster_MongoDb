@@ -2,33 +2,33 @@ import { connect } from "./helpers/db/connect.js";
 import util from 'util';
 
 
-import { 
-    getCountDvd,
-    getDVDCopies,
-    getMoviesWithMainActors,
-    getTotalMoviesAwards,
-    getAllJohnDoeMovies,
-    getAllFictionMoviesWithActorId3,
-    getDistinctGenres,
-    getMovieWithMayorDVD,
-    getAllBlurayValue,
-    getAllMoviesWithActor2,
-    getMoviesForActor,
-    getAllDVDCopies,
-    getJohnDueMovies
-} from "./js/model/movies.js";
+// import { 
+//     getCountDvd,
+//     getDVDCopies,
+//     getMoviesWithMainActors,
+//     getTotalMoviesAwards,
+//     getAllJohnDoeMovies,
+//     getAllFictionMoviesWithActorId3,
+//     getDistinctGenres,
+//     getMovieWithMayorDVD,
+//     getAllBlurayValue,
+//     getAllMoviesWithActor2,
+//     getMoviesForActor,
+//     getAllDVDCopies,
+//     getJohnDueMovies
+// } from "./js/model/movies.js";
 
 
-import { 
-    getActorsWithOscarAward,
-    getTotalOfActors,
-    getActorsAward,
-    getBornLater1980,
-    getMostAwardActors,
-    getAverageOfActorsAge,
-    getActorsWithInstagram,
-    getActorsWithAwardsLater2015
-} from "./js/model/actors.js";
+// import { 
+//     getActorsWithOscarAward,
+//     getTotalOfActors,
+//     getActorsAward,
+//     getBornLater1980,
+//     getMostAwardActors,
+//     getAverageOfActorsAge,
+//     getActorsWithInstagram,
+//     getActorsWithAwardsLater2015
+// } from "./js/model/actors.js";
 
 
 // console.log (await getCountDvd());
@@ -52,8 +52,8 @@ import {
 // console.log(await getAllDVDCopies());
 
 
-let { JohnDue_movies } = await getJohnDueMovies();
-console.log(JohnDue_movies);
+// let { JohnDue_movies } = await getJohnDueMovies();
+// console.log(JohnDue_movies);
 
 
 // console.log (await getTotalOfActors());
@@ -74,9 +74,17 @@ console.log(JohnDue_movies);
 
 
 
-// main.j
+import {movis} from './js/model/movies.js'
+import {authors} from './js/model/actors.js'
 
-// import { movis } from "./js/model/movis.js";
 
-// let objMovis = new movis();
-// console.log(await objMovis.getCountDvd());
+let objMovis = new movis();
+
+console.log(`1.Contar el número total de copias de DVD disponibles en todos los registros:`, await objMovis.getDVDCopies());
+
+objMovis.destructor();
+
+
+// let objAuthors = new authors();
+
+// console.log(await objAuthors.getActorsWithOscarAward());
