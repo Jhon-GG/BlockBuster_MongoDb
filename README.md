@@ -453,24 +453,35 @@
 
     ```javascript
     db.movis.aggregate([
-        { "$match": 
-        { "character.id_actor": 2 }
-        },
-        {
-            "$lookup": {
-                "from": "authors",
-                "localField": "character.id_actor",
-                "foreignField": "id_actor",
-                "as": "actors"
-            }
-        },
-        {
-            "$project": {
-                "_id": 1,
-                "name": 1,
-                "actor_name": { "$arrayElemAt": ["$actors.full_name", 1] }
-            }
-        }
+    {
+      $match: { "character.id_actor": 2 }
+    },
+    {
+      $unwind: "$character"
+    },
+    {
+      $match: { "character.id_actor": 2 }
+    },
+    {
+      $lookup: {
+        from: "authors",
+        localField: "character.id_actor",
+        foreignField: "id_actor",
+        as: "actor_info"
+      }
+    },
+    {
+      $unwind: "$actor_info"
+    },
+    {
+      $project: {
+        _id: 1,
+        movie_name: "$name",
+        actor_id: "$character.id_actor",
+        actor_name: "$actor_info.full_name",
+        role: "$character.rol"
+      }
+    }
     ]);
     ```
 
