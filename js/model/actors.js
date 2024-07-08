@@ -28,8 +28,8 @@ export class authors extends connect {
 
     async getActorsWithOscarAward() {
         await this.conexion.connect();
-    
-        const pipeline = [
+        const collection = this.db.collection('authors');
+        const data = await collection.aggregate([
             {
                 "$unwind": "$awards"
             },
@@ -45,14 +45,55 @@ export class authors extends connect {
                     "awards.category": 1
                 }
             }
-        ];
-    
-        const result = await this.collection.aggregate(pipeline).toArray();
+        ]).toArray();
         await this.conexion.close();
+        return data;
+    }
+       
+
+    // 3. Encontrar la cantidad total de premios que ha ganado cada actor:
+
+    async getActorsAward() {
+        await this.conexion.connect();
+        const collection = this.db.collection('authors');
+        const data = await collection.aggregate([
+            {
+                "$project": {
+                    "_id": 0,
+                    "full_name": 1,
+                    "total_awards": { "$size": "$awards" }
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
+        return data;
+    }
+
+
+    // 4.Obtener todos los actores nacidos después de 1980:
     
-        return result;
+    async getBornLater1980() {
+        await this.conexion.connect();
+        const collection = this.db.collection('authors');
+        const data = await collection.aggregate([
+            {
+                "$match": {
+                    "date_of_birth": { $gt: "1980-01-01" }
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "full_name": 1,
+                    "date_of_birth": 1
+                }
+            }
+        ]).toArray();
+        await this.conexion.close();
+        return data;
     }
     
+
 }
 
 

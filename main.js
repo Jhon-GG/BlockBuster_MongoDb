@@ -85,6 +85,15 @@ console.log(`1.Contar el número total de copias de DVD disponibles en todos los
 objMovis.destructor();
 
 
-// let objAuthors = new authors();
 
-// console.log(await objAuthors.getActorsWithOscarAward());
+
+let objAuthors = new authors();
+
+console.log(`2.Encontrar todos los actores que han ganado premios Oscar:`,await objAuthors.getActorsWithOscarAward());
+console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
+console.log(`4.Obtener todos los actores nacidos después de 1980:`, await objAuthors.getBornLater1980());
+
+console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
+console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
+console.log(`3. Encontrar la cantidad total de premios que ha ganado cada actor:`, await objAuthors.getActorsAward());
+objAuthors.destructor();
