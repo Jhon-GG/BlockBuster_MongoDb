@@ -93,18 +93,24 @@
 
    ```javascript
    db.movis.aggregate([
-       {
-           "$unwind": "$genre"
-       },
-       {
-           "$group": {
-               "_id": "$genre"
-           }
-       },
-       {
-           "$sort": { "_id": 1 }
-       }
-   ]);
+      {
+        "$unwind": "$genre"
+      },
+      {
+       "$group": {
+         "_id": "$genre"
+        }
+      },
+      {
+        "$sort": { "_id": 1 }
+      },
+      {
+        "$project": {
+          "genero": "$_id",
+          "_id": 0
+        }
+      }
+      ]);
    ```
 
 7. **Encontrar películas donde el actor con id 1 haya participado:**
