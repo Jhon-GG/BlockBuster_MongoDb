@@ -80,19 +80,18 @@ import {authors} from './js/model/actors.js'
 
 let objMovis = new movis();
 
-// console.log(`1.Contar el número total de copias de DVD disponibles en todos los registros:`, await objMovis.getDVDCopies());
+// console.log(`1.Contar el número total de copias de DVD disponibles en todos los registros:`, await objMovis.getTotalDVDCopies());
 // console.log(`6.Listar todos los géneros de películas distintos:`, await objMovis.getDistinctGenres());
 // console.log(`7.Encontrar películas donde el actor con id 1 haya participado:`, await objMovis.getMoviesForActor());
 // console.log(`8. Calcular el valor total de todas las copias de DVD disponibles:`, await objMovis.getAllDVDCopies());
 // console.log(`9.Encontrar todas las películas en las que John Doe ha actuado:`, await objMovis.getJohnDueMovies());
 // console.log(`13.Encontrar todas las películas en las que participan actores principales:`, await objMovis.getMoviesWithMainActors());
-// console.log(`14. Encontrar el número total de premios que se han otorgado en todas las películas:`, await objAuthors.getTotalMoviesAwards());
+// console.log(`14. Encontrar el número total de premios que se han otorgado en todas las películas:`, await objMovis.getTotalMoviesAwards());
 // console.log(`15. Encontrar todas las películas en las que John Doe ha actuado y que están en formato Blu-ray:`, await objMovis.getAllJohnDoeMovies());
 // console.log(`16.Encontrar todas las películas de ciencia ficción que tengan al actor con id 3:`, await objMovis.getAllFictionMoviesWithActorId3());
 // console.log(`17. Encontrar la película con más copias disponibles en formato DVD:`, await objMovis.getMovieWithMayorDVD());
 // console.log(`19. Calcular el valor total de todas las copias de Blu-ray disponibles:`, await objMovis.getAllBlurayValue());
 console.log(`20.Encontrar todas las películas en las que el actor con id 2 haya participado:`, await objMovis.getAllMoviesWithActor2());
-
 
 objMovis.destructor();
 

@@ -69,12 +69,15 @@ export class connect {
     #pass;
     #dbName;
 
+
+//   mongodb://mongo:aNIVdYUdWkFIJnETyhGYMQGzMdpjYCdl@roundhouse.proxy.rlwy.net:23375
+
     constructor({ host, user, pass, port, cluster, dbName } = {
         host: "mongodb://",
         user: "mongo",
-        pass: "PNSmQbwecKrbuFTCqXmYoaqicgEZpFeF",
-        port: 47797,
-        cluster: "monorail.proxy.rlwy.net",
+        pass: "aNIVdYUdWkFIJnETyhGYMQGzMdpjYCdl",
+        port: 23375,
+        cluster: "roundhouse.proxy.rlwy.net",
         dbName: "test"
     }) {
         if (connect.instanceConnect) {
